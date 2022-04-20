@@ -57,7 +57,11 @@ export function MainStackScreen() {
         options={options}
         component={InputScreen}
       />
-      <MainStack.Screen name="ShopScreen" component={ShopScreen} />
+      <MainStack.Screen
+        name="ShopScreen"
+        options={options}
+        component={ShopScreen}
+      />
     </MainStack.Navigator>
   );
 }

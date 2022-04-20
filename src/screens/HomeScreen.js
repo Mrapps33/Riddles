@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -13,6 +13,15 @@ import firebase from "firebase";
 
 export default function HomeScreen({ navigation }) {
   const [count, setCount] = useState(0);
+  const [username, setUsername] = useState("");
+  useEffect(() => {
+    (async () => {
+      let id = await firebase.auth().currentUser.uid;
+      let result = await firebase.firestore().collection("Users").doc(id).get();
+      let data = result.data();
+      setUsername(data.username);
+    })();
+  }, []);
 
   const onPress = () => {
     setCount(count + 1);
@@ -25,6 +34,7 @@ export default function HomeScreen({ navigation }) {
         style={styles.backroundImage}
         resizeMode="cover"
       >
+        <Text style={styles.text}>welcome back {username}</Text>
         <TouchableOpacity
           onPress={() => {
             navigation.reset({

@@ -12,25 +12,34 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firebase from "firebase";
 
-export default function GameScreen() {
+export default function GameScreen({ route }) {
   const [level, setLevel] = useState(1);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [guess, setGuess] = useState("");
-
-  //  const [proceed, setProceed] = useState(false);
-  const firstUpdate = useRef(true);
-
+  const [coins, setCoins] = useState(0);
   const allRiddles = firebase.firestore().collection("riddles").doc("riddles");
+  const userDoc = firebase
+    .firestore()
+    .collection("Users")
+    .doc(firebase.auth().currentUser.uid);
 
   useEffect(() => {
-    let parsedValue;
+    /*Firebase listener */
+    const observer = userDoc.onSnapshot(
+      (docSnapshot) => {
+        const userData = docSnapshot.get("data");
+        setLevel(userData.level);
+        setCoins(userData.coins);
+      },
+      (err) => {}
+    );
+
+    return observer;
+  }, []);
+  useEffect(() => {
     (async () => {
       try {
-        let value = await AsyncStorage.getItem("level");
-        if (value != null) {
-          parsedValue = JSON.parse(value);
-        }
         let riddles = await allRiddles.get();
         riddles = await riddles.data();
         riddles = riddles.riddles;
@@ -38,21 +47,8 @@ export default function GameScreen() {
         setAnswer(riddles[level].answer);
       } catch (error) {}
     })();
-    if (!firstUpdate.current) {
-      firstUpdate.current = false;
-      (async () => {
-        try {
-          let value = await AsyncStorage.getItem("level");
-          if (value != null) {
-            await AsyncStorage.setItem(
-              "level",
-              JSON.stringify(parsedValue + 1)
-            );
-          }
-        } catch (error) {}
-      })();
-    }
   }, [level]);
+
   return (
     <View style={{ flex: 1 }}>
       <TouchableOpacity onPress={() => {}} style={styles.buyHint}>
@@ -78,7 +74,8 @@ export default function GameScreen() {
             <TouchableOpacity
               onPress={() => {
                 if (guess.toLowerCase() === answer.toLowerCase()) {
-                  setLevel(level + 1);
+                  userDoc.update({ "data.level": level + 1 });
+
                   setGuess("");
                 }
               }}

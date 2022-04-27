@@ -25,11 +25,17 @@ export default function SignUpScreen({ navigation }) {
       console.log("about to make a call");
       await firebase.auth().createUserWithEmailAndPassword(email, password);
       let id = await firebase.auth().currentUser.uid;
-      await firebase.firestore().collection("Users").doc(id).set({
-        username: username,
-        level: 1,
-        coins: 0,
-      });
+      await firebase
+        .firestore()
+        .collection("Users")
+        .doc(id)
+        .set({
+          data: {
+            username: username,
+            level: 1,
+            coins: 0,
+          },
+        });
 
       console.log("after call");
     } catch (error) {

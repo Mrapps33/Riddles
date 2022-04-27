@@ -14,9 +14,10 @@ import firebase from "firebase";
 export default function HomeScreen({ navigation }) {
   const [count, setCount] = useState(0);
   const [username, setUsername] = useState("");
+  let id;
   useEffect(() => {
     (async () => {
-      let id = await firebase.auth().currentUser.uid;
+      id = await firebase.auth().currentUser.uid;
       let result = await firebase.firestore().collection("Users").doc(id).get();
       let data = result.data();
       setUsername(data.username);
@@ -52,10 +53,7 @@ export default function HomeScreen({ navigation }) {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "GameScreen" }],
-            });
+            navigation.navigate("GameScreen", { docId: id });
           }}
         >
           <Text style={styles.text}>Play Button</Text>

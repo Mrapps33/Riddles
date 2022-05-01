@@ -32,7 +32,7 @@ export default function GameScreen({ route }) {
         setLevel(userData.level);
         setCoins(userData.coins);
       },
-      (err) => {}
+      (err) => { }
     );
 
     return observer;
@@ -45,26 +45,28 @@ export default function GameScreen({ route }) {
         riddles = riddles.riddles;
         setQuestion(riddles[level].question);
         setAnswer(riddles[level].answer);
-      } catch (error) {}
+      } catch (error) { }
     })();
   }, [level]);
 
   return (
     <View style={{ flex: 1 }}>
-      <TouchableOpacity onPress={() => {}} style={styles.buyHint}>
-        <Text style={styles.hints}>buy hints</Text>
-      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => { }}
+        style={styles.buyHint}
+      ></TouchableOpacity>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <ImageBackground
           source={require("../../assets/gamescreen.jpg")}
           style={styles.backroundImage}
           resizeMode="cover"
         >
-          <Text>GameScreen: {level}</Text>
+          <Text style={{ fontSize: 20, color: "yellow" }}>Level: {level}</Text>
           <View>
             <Text style={styles.questionText}>{question}</Text>
           </View>
           <TextInput
+            placeholderTextColor="yellow"
             style={styles.input}
             placeholder="type your answer here"
             onChangeText={setGuess}
@@ -118,6 +120,7 @@ const styles = StyleSheet.create({
   questionText: {
     color: "yellow",
     fontSize: 30,
+    textAlign: "center",
   },
   buyHint: {
     alignItems: "baseline",

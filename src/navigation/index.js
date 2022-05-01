@@ -44,7 +44,7 @@ export function MainStackScreen() {
     <MainStack.Navigator>
       <MainStack.Screen
         name="HomeScreen"
-        options={options}
+        options={{ headerShown: false }}
         component={HomeScreen}
       />
       <MainStack.Screen

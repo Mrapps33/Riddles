@@ -14,13 +14,16 @@ import firebase from "firebase";
 export default function HomeScreen({ navigation }) {
   const [count, setCount] = useState(0);
   const [username, setUsername] = useState("");
+  const [level, setLevel] = useState(1);
   let id;
   useEffect(() => {
     (async () => {
       id = await firebase.auth().currentUser.uid;
       let result = await firebase.firestore().collection("Users").doc(id).get();
-      let data = result.data();
+      let data = result.data().data;
+      console.log("here", data.username, data.level);
       setUsername(data.username);
+      setLevel(data.level);
     })();
   }, []);
 
@@ -37,6 +40,14 @@ export default function HomeScreen({ navigation }) {
       >
         <Text style={styles.text}>welcome back {username}</Text>
         <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            navigation.navigate("GameScreen", { docId: id });
+          }}
+        >
+          <Text style={styles.text}>Play Button</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
           onPress={() => {
             navigation.reset({
               index: 0,
@@ -47,17 +58,7 @@ export default function HomeScreen({ navigation }) {
         >
           <Text style={styles.text}>shop</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.text}>{count}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            navigation.navigate("GameScreen", { docId: id });
-          }}
-        >
-          <Text style={styles.text}>Play Button</Text>
-        </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
@@ -97,7 +98,6 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   backroundImage: {
-    flexDirection: "row",
     width: "100%",
     height: "100%",
     flex: 1,
@@ -105,6 +105,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   text: {
-    fontSize: 50,
+    fontSize: 40,
   },
 });
